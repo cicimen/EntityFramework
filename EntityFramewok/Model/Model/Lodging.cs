@@ -16,6 +16,8 @@ namespace Model
 
         public bool IsResort { get; set; }
 
+
+        [Required]
         public Destination Destination { get; set; }
 
 

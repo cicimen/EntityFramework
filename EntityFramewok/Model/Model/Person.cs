@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace Model
 {
@@ -34,7 +35,11 @@ namespace Model
         public string LastName { get; set; }
         public Address Address { get; set; }
         public PersonalInfo Info { get; set; }
-    
+
+        public List<Lodging> PrimaryContactFor { get; set; }
+        public List<Lodging> SecondaryContactFor { get; set; }
+
+        public PersonPhoto Photo { get; set; }
     }
 
     [ComplexType]
@@ -42,9 +47,13 @@ namespace Model
     {
         public int AddressId { get; set; }
         [MaxLength(150)]
+        [Column("StreetAddress")]
         public string StreetAddress { get; set; }
+        [Column("City")]
         public string City { get; set; }
+        [Column("State")]
         public string State { get; set; }
+        [Column("ZipCode")]
         public string ZipCode { get; set; }
     }
 

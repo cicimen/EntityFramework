@@ -34,9 +34,25 @@ namespace DataAccess
 
         //modelBuilder.ComplexType<Address>().Property(p => p.StreetAddress).HasMaxLength(150);
 
+        //modelBuilder.Entity<Destination>().HasMany(d => d.Lodgings).WithOptional(l => l.Destination);
+
+        //modelBuilder.Entity<InternetSpecial>().HasRequired(s => s.Accommodation).WithMany(l => l.InternetSpecials).HasForeignKey(s => s.AccommodationId);
+
+
+        //modelBuilder.Entity<Lodging>().HasOptional(l => l.PrimaryContact).WithMany(p => p.PrimaryContactFor);
+        //modelBuilder.Entity< Lodging >().HasOptional(l => l.SecondaryContact).WithMany(p => p.SecondaryContactFor);
+
+        //modelBuilder.Entity<PersonPhoto>().HasRequired(p => p.PhotoOf).WithOptional(p => p.Photo);
+
+        //modelBuilder.Entity<PersonPhoto>().HasRequired(p => p.PhotoOf).WithRequiredDependent(p => p.Photo);
+
+        //modelBuilder.Entity<Destination>().ToTable("Locations", "baga");
+
+        //modelBuilder.ComplexType<Address>().Property(p => p.StreetAddress).HasColumnName("StreetAddress");
+
     }
 
-
+    
     public class AddressConfiguration :ComplexTypeConfiguration<Address>
     {
         public AddressConfiguration()
@@ -59,9 +75,16 @@ namespace DataAccess
     {
         public DestinationConfiguration()
         {           
-            Property(d => d.Name).IsRequired();
+            //Property(d => d.Name).IsRequired();
             Property(d => d.Description).HasMaxLength(500);
             Property(d => d.Photo).HasColumnType("image");
+            
+
+            //HasMany(d => d.Lodgings).WithOptional(l => l.Destination);
+            //HasMany(d => d.Lodgings).WithRequired(l => l.Destination);
+
+            Property(d => d.Name).IsRequired().HasColumnName("LocationName");
+            Property(d => d.DestinationId).HasColumnName("LocationID");
         }
     }
     public class LodgingConfiguration : EntityTypeConfiguration<Lodging>
@@ -71,6 +94,10 @@ namespace DataAccess
             Property(l => l.Name).IsRequired().HasMaxLength(200);
 
             Property(l => l.MilesFromNearestAirport).HasPrecision(8, 1);
+
+
+            //HasRequired(l => l.Destination).WithMany(d => d.Lodgings).WillCascadeOnDelete(false);
+
         }
     }
 
@@ -82,6 +109,13 @@ namespace DataAccess
         }
     }
 
+    public class AddressConfiguration : ComplexTypeConfiguration<Address>
+    {
+        public AddressConfiguration()
+        {
+            Property(a => a.StreetAddress).HasColumnName("StreetAddress");
+        }
+    }
 
 
 //    The DatabaseGeneratedOption can be configured on a particular property. You can append

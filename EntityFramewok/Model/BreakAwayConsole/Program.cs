@@ -3,6 +3,7 @@ using DataAccess;
 using System.Data.Entity;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace BreakAwayConsole
 {
@@ -11,8 +12,10 @@ namespace BreakAwayConsole
         static void Main(string[] args)
         {
             Database.SetInitializer(new DropCreateDatabaseIfModelChanges<BreakAwayContext>());
-            InsertTrip();
-            InsertDestination();
+            //InsertTrip();
+            //InsertDestination();
+            //InsertPerson();
+            DeleteDestinationInMemoryAndDbCascade();
         }
 
         private static void InsertDestination()
@@ -77,6 +80,66 @@ namespace BreakAwayConsole
                 var person = context.People.FirstOrDefault();
                 person.FirstName = "Rowena";
                 context.SaveChanges();
+            }
+        }
+
+        private static void DeleteDestinationInMemoryAndDbCascade()
+        {
+            int destinationId;
+            using (var context = new BreakAwayContext())
+            {
+                var destination = new Destination
+                {
+                    Name = "Sample Destination",
+                    Lodgings = new List<Lodging>
+                    {
+                    new Lodging { Name = "Lodging One" },
+                    new Lodging { Name = "Lodging Two" }
+                    }
+                };
+                context.Destinations.Add(destination);
+                context.SaveChanges();
+                destinationId = destination.DestinationId;
+            }
+            using (var context = new BreakAwayContext())
+            {
+                var destination = context.Destinations.Include("Lodgings").Single(d => d.DestinationId == destinationId);
+                var aLodging = destination.Lodgings.FirstOrDefault();
+                context.Destinations.Remove(destination);
+                Console.WriteLine("State of one Lodging: {0}", context.Entry(aLodging).State.ToString());
+                context.SaveChanges();
+            }
+        }
+
+        private static void DeleteDestinationInMemoryAndDbCascade2()
+        {
+            int destinationId;
+            using (var context = new BreakAwayContext())
+            {
+                var destination = new Destination
+                {
+                Name = "Sample Destination",
+                Lodgings = new List<Lodging>
+                {
+                new Lodging { Name = "Lodging One" },
+                new Lodging { Name = "Lodging Two" }
+                }
+                };
+                context.Destinations.Add(destination);
+                context.SaveChanges();
+                destinationId = destination.DestinationId;
+            }
+            using (var context = new BreakAwayContext())
+            {
+                var destination = context.Destinations
+                .Single(d => d.DestinationId == destinationId);
+                context.Destinations.Remove(destination);
+                context.SaveChanges();
+            }
+            using (var context = new BreakAwayContext())
+            {
+                var lodgings = context.Lodgings.Where(l => l.DestinationId == destinationId).ToList();
+                Console.WriteLine("Lodgings: {0}", lodgings.Count);
             }
         }
 

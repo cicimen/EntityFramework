@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Model
 {
@@ -7,7 +8,7 @@ namespace Model
     {
         public int DestinationId { get; set; }
 
-        [Required]
+        [Required, Column("LocationName")]
         public string Name { get; set; }
 
         public string Country { get; set; }
@@ -15,7 +16,7 @@ namespace Model
         [MaxLength(500)]
         public string Description { get; set; }
 
-        [System.ComponentModel.DataAnnotations.Schema.Column(TypeName = "image")]
+        [Column(TypeName = "image")]
         public byte[] Photo { get; set; }
         public List<Lodging> Lodgings { get; set; }
     }

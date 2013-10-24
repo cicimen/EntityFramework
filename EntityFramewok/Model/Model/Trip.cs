@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace Model
 {
@@ -15,5 +16,7 @@ namespace Model
 
         [Timestamp]
         public byte[] RowVersion { get; set; }
+
+        public List<Activity> Activities { get; set; }
     }
 }

@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Model
 {
-    [Table("Locations", Schema = "baga")]
     public class Lodging
     {
         public int LodgingId { get; set; }

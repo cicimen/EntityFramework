@@ -4,8 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Model
 {
+    [Table("Locations", Schema = "baga")]
     public class Destination
     {
+        [Column("LocationID")]
         public int DestinationId { get; set; }
 
         [Required, Column("LocationName")]

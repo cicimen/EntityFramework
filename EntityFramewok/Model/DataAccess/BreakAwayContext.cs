@@ -49,7 +49,8 @@ namespace DataAccess
         //modelBuilder.Entity<Destination>().ToTable("Locations", "baga");
 
         //modelBuilder.ComplexType<Address>().Property(p => p.StreetAddress).HasColumnName("StreetAddress");
-
+        //bu şekilde yaparsan sadece persondaki adres bilgileri için geçerli oluyor.
+        //modelBuilder.Entity<Person>().Property(p => p.Address.StreetAddress).HasColumnName("StreetAddress");
     }
 
     
@@ -57,7 +58,8 @@ namespace DataAccess
     {
         public AddressConfiguration()
         {
-            Property(a => a.StreetAddress).HasMaxLength(150);
+            Property(a => a.StreetAddress).HasMaxLength(150).HasColumnName("StreetAddress");
+            Property(a => a.StreetAddress).HasColumnName("StreetAddress");
         }
     }
 
@@ -83,8 +85,20 @@ namespace DataAccess
             //HasMany(d => d.Lodgings).WithOptional(l => l.Destination);
             //HasMany(d => d.Lodgings).WithRequired(l => l.Destination);
 
-            Property(d => d.Name).IsRequired().HasColumnName("LocationName");
-            Property(d => d.DestinationId).HasColumnName("LocationID");
+            //Property(d => d.Name).IsRequired().HasColumnName("LocationName");
+            //Property(d => d.DestinationId).HasColumnName("LocationID");
+
+            Map(m =>
+            {
+                m.Properties(d => new { d.Name, d.Country, d.Description });
+                m.ToTable("Locations");
+            });
+            Map(m =>
+            {
+                m.Properties(d => new { d.Photo });
+                m.ToTable("LocationPhotos");
+            });
+
         }
     }
     public class LodgingConfiguration : EntityTypeConfiguration<Lodging>
@@ -106,16 +120,10 @@ namespace DataAccess
         public PersonConfiguration()
         {
             Property(p => p.SocialSecurityNumber).IsConcurrencyToken();
+            Property(p => p.Address.StreetAddress).HasColumnName("StreetAddress");
         }
     }
 
-    public class AddressConfiguration : ComplexTypeConfiguration<Address>
-    {
-        public AddressConfiguration()
-        {
-            Property(a => a.StreetAddress).HasColumnName("StreetAddress");
-        }
-    }
 
 
 //    The DatabaseGeneratedOption can be configured on a particular property. You can append
@@ -141,6 +149,31 @@ namespace DataAccess
 
 
 
+//    public class ReservationConfiguration :
+//EntityTypeConfiguration<Reservation>
+//{
+//}
 
+//Notice that we’ve done nothing more than declare the class. There’s no code in it. This
+//is enough to allow you to add the class to the DbModelBuilder configurations, which
+//will ensure that Reservation is included in the model and maps to the database table,
+//Reservations:
+
+//modelBuilder.Configurations.Add(new ReservationConfiguration());
+
+//Now that you’ve seen the conventional behavior that causes Code First to include a
+//class in its model, let’s look at how to configure the model to exclude a class.
+
+
+    //modelBuilder.Ignore<MyInMemoryOnlyClass>();
+
+
+//    modelBuilder.Entity<Lodging>().Map(m =>
+//{
+//m.ToTable("Lodgings");
+//}).Map<Resort>(m =>
+//{
+//m.ToTable("Resorts");
+//});
 
 }

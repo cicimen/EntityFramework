@@ -40,6 +40,8 @@ namespace Model
         public List<Lodging> SecondaryContactFor { get; set; }
 
         public PersonPhoto Photo { get; set; }
+
+        public List<Reservation> Reservations { get; set; }
     }
 
     [ComplexType]
